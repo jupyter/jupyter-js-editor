@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "target": "ES5",
+    "outDir": "./build"
+  },
+  "files": [
+    "src/index.ts"
+  ]
+}
