@@ -55,11 +55,13 @@ export
 class EditorModel implements IEditorModel {
 
   save(data: string) {
-    console.log('MODEL SAVE');
+    // to be delegated to jupyter-js-services.
+    console.log('model save');
   }
 
   rename(name: string) {
-    console.log("MODEL RENAME");
+    // to be delegated to jupyter-js-services.
+    console.log('model rename');
   }
 
   private _filename: string;
