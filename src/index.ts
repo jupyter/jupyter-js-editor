@@ -32,7 +32,7 @@ interface IEditorModel {
   /**
    * Saves the current data in the existing file.
    *
-   * @param data - A string containing the entire data to be saved.
+   * @param data - A string containing the complete data to be saved.
    */
   save(data: string): void;
   /**
@@ -54,12 +54,15 @@ interface IEditorModel {
 export
 class EditorModel implements IEditorModel {
 
-  save(data: string) {
+  /**
+   * Save the data to file.
+   */
+  save(data: string): void {
     // to be delegated to jupyter-js-services.
     console.log('model save');
   }
 
-  rename(name: string) {
+  rename(name: string): void {
     // to be delegated to jupyter-js-services.
     console.log('model rename');
   }
@@ -176,16 +179,14 @@ class EditorViewModel implements IDisposable, IEditorViewModel {
 
   private _startBufferTimer(): void {
     clearTimeout(this._bufferTimeoutId);
-    //console.log("setting timeout...");
     this._bufferTimeoutId = setTimeout(() => {
-      //console.log("TIMED OUT");
       this._updateBuffer();
     }, this._bufferDelay);
   }
 
   showLineNumbers = true;
   readOnly = true;
-  tabSize = 2; // TODO
+  tabSize = 2;
 
   private _mode = '';
   private _disposed = false;
@@ -238,7 +239,7 @@ class EditorWidget extends Widget implements IEditorWidget {
   static contentsChangedSignal = new Signal<IEditorWidget, boolean>();
 
   /**
-   * A delegate for [[contentsChangedSignal]].
+   * A pure delegate for [[contentsChangedSignal]].
    */
   static getContentsChanged(item: IEditorWidget): ISignal<IEditorWidget, boolean> {
     return EditorWidget.contentsChangedSignal.bind(item);

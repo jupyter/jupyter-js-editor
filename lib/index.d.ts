@@ -9,7 +9,7 @@ export interface IEditorModel {
     /**
      * Saves the current data in the existing file.
      *
-     * @param data - A string containing the entire data to be saved.
+     * @param data - A string containing the complete data to be saved.
      */
     save(data: string): void;
     /**
@@ -27,6 +27,9 @@ export interface IEditorModel {
  * An implementation of IEditorModel.
  */
 export declare class EditorModel implements IEditorModel {
+    /**
+     * Save the data to file.
+     */
     save(data: string): void;
     rename(name: string): void;
     private _filename;
@@ -148,7 +151,7 @@ export declare class EditorWidget extends Widget implements IEditorWidget {
      */
     static contentsChangedSignal: Signal<IEditorWidget, boolean>;
     /**
-     * A delegate for [[contentsChangedSignal]].
+     * A pure delegate for [[contentsChangedSignal]].
      */
     static getContentsChanged(item: IEditorWidget): ISignal<IEditorWidget, boolean>;
     /**

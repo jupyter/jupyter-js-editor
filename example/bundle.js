@@ -43,11 +43,16 @@ var EditorModel = (function () {
         this._lineNumbers = true;
         this._tabSize = 2;
     }
+    /**
+     * Save the data to file.
+     */
     EditorModel.prototype.save = function (data) {
-        console.log('MODEL SAVE');
+        // to be delegated to jupyter-js-services.
+        console.log('model save');
     };
     EditorModel.prototype.rename = function (name) {
-        console.log("MODEL RENAME");
+        // to be delegated to jupyter-js-services.
+        console.log('model rename');
     };
     return EditorModel;
 })();
@@ -59,7 +64,7 @@ var EditorViewModel = (function () {
     function EditorViewModel(model) {
         this.showLineNumbers = true;
         this.readOnly = true;
-        this.tabSize = 2; // TODO
+        this.tabSize = 2;
         this._mode = '';
         this._disposed = false;
         this._view = null;
@@ -130,9 +135,7 @@ var EditorViewModel = (function () {
     EditorViewModel.prototype._startBufferTimer = function () {
         var _this = this;
         clearTimeout(this._bufferTimeoutId);
-        //console.log("setting timeout...");
         this._bufferTimeoutId = setTimeout(function () {
-            //console.log("TIMED OUT");
             _this._updateBuffer();
         }, this._bufferDelay);
     };
@@ -171,7 +174,7 @@ var EditorWidget = (function (_super) {
         this._viewmodel.setView(this);
     }
     /**
-     * A delegate for [[contentsChangedSignal]].
+     * A pure delegate for [[contentsChangedSignal]].
      */
     EditorWidget.getContentsChanged = function (item) {
         return EditorWidget.contentsChangedSignal.bind(item);
