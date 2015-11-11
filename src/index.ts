@@ -62,6 +62,9 @@ class EditorModel implements IEditorModel {
     console.log('model save');
   }
 
+  /**
+   * Rename the current file.
+   */
   rename(name: string): void {
     // to be delegated to jupyter-js-services.
     console.log('model rename');
@@ -170,6 +173,21 @@ class EditorViewModel implements IDisposable, IEditorViewModel {
     return this._disposed;
   }
 
+  /**
+   * Flag that determines whether to show line numbers.
+   */
+  showLineNumbers = true;
+
+  /**
+   * Flag that determines whether the view is read-only.
+   */
+  readOnly = true;
+
+  /**
+   * Number of spaces to use for a tab.
+   */
+  tabSize = 2;
+
   private _updateBuffer(): void {
     if (!this.isDisposed) {
       var data = this._view.getContents();
@@ -183,10 +201,6 @@ class EditorViewModel implements IDisposable, IEditorViewModel {
       this._updateBuffer();
     }, this._bufferDelay);
   }
-
-  showLineNumbers = true;
-  readOnly = true;
-  tabSize = 2;
 
   private _mode = '';
   private _disposed = false;

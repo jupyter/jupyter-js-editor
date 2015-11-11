@@ -50,6 +50,9 @@ var EditorModel = (function () {
         // to be delegated to jupyter-js-services.
         console.log('model save');
     };
+    /**
+     * Rename the current file.
+     */
     EditorModel.prototype.rename = function (name) {
         // to be delegated to jupyter-js-services.
         console.log('model rename');
@@ -62,8 +65,17 @@ var EditorViewModel = (function () {
      * Construct an editor view model.
      */
     function EditorViewModel(model) {
+        /**
+         * Flag that determines whether to show line numbers.
+         */
         this.showLineNumbers = true;
+        /**
+         * Flag that determines whether the view is read-only.
+         */
         this.readOnly = true;
+        /**
+         * Number of spaces to use for a tab.
+         */
         this.tabSize = 2;
         this._mode = '';
         this._disposed = false;

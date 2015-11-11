@@ -31,6 +31,9 @@ export declare class EditorModel implements IEditorModel {
      * Save the data to file.
      */
     save(data: string): void;
+    /**
+     * Rename the current file.
+     */
     rename(name: string): void;
     private _filename;
     private _mode;
@@ -101,11 +104,20 @@ export declare class EditorViewModel implements IDisposable, IEditorViewModel {
      * Get the disposed status of this object.
      */
     isDisposed: boolean;
+    /**
+     * Flag that determines whether to show line numbers.
+     */
+    showLineNumbers: boolean;
+    /**
+     * Flag that determines whether the view is read-only.
+     */
+    readOnly: boolean;
+    /**
+     * Number of spaces to use for a tab.
+     */
+    tabSize: number;
     private _updateBuffer();
     private _startBufferTimer();
-    showLineNumbers: boolean;
-    readOnly: boolean;
-    tabSize: number;
     private _mode;
     private _disposed;
     private _view;
