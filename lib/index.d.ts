@@ -1,11 +1,16 @@
 import { IDisposable } from 'phosphor-disposable';
 import { Message } from 'phosphor-messaging';
-import { Signal, ISignal } from 'phosphor-signaling';
 import { Widget, ResizeMessage } from 'phosphor-widget';
 /**
- * The interface required for an editor model.
+ * An interface required for implementing the editor model
  */
 export interface IEditorModel {
+    /**
+     * Updates the buffer stored in the model.
+     *
+     * @param value - A string containing the complete data in the view.
+     */
+    updateBuffer(value: string): void;
     /**
      * Saves the current data in the existing file.
      *
@@ -22,46 +27,11 @@ export interface IEditorModel {
      * new file with the same data.
      */
     rename(name: string): void;
-}
-/**
- * An implementation of IEditorModel.
- */
-export declare class EditorModel implements IEditorModel {
-    /**
-     * Save the data to file.
-     */
-    save(data: string): void;
-    /**
-     * Rename the current file.
-     */
-    rename(name: string): void;
-    private _filename;
-    private _mode;
-    private _lineNumbers;
-    private _tabSize;
-}
-/**
- * An interface required for implementing the view-model
- * for an editor.
- */
-export interface IEditorViewModel {
-    /**
-     * Save the current text buffer to the file.
-     */
-    save(data: string): void;
-    /**
-     * Rename this file.
-     */
-    rename(name: string): void;
     /**
      * The mode of the editor, eg. for code this would be
      * the language, like 'python' or 'javascript'.
      */
     mode(): string;
-    /**
-     * Sets the view class on on the view model.
-     */
-    setView(view: IEditorWidget): void;
     /**
      * A flag to determine whether to show line numbers.
      */
@@ -75,15 +45,41 @@ export interface IEditorViewModel {
      */
     tabSize: number;
 }
-export declare class EditorViewModel implements IDisposable, IEditorViewModel {
+/**
+ * Interface that must be implemented to set defaults on an EditorModel.
+ */
+export interface IEditorConfigOptions {
     /**
-     * Construct an editor view model.
+     * The mode of the view, ie. 'python', 'text' or 'javascript'.
      */
-    constructor(model: IEditorModel);
+    mode?: string;
     /**
-     * Set the view object for this view model.
+     * A flag to determine whether to show line numbers.
      */
-    setView(view: IEditorWidget): void;
+    showLineNumbers?: boolean;
+    /**
+     * A flag to determine whether the view is read-only.
+     */
+    readOnly?: boolean;
+    /**
+     * The number of spaces to use for a tab.
+     */
+    tabSize?: number;
+}
+/**
+ * The data model behind the editor view.
+ */
+export declare class EditorModel implements IDisposable, IEditorModel {
+    /**
+     * Construct an Editor Model.
+     */
+    constructor(config?: IEditorConfigOptions);
+    /**
+     * Updates the buffer stored in the model.
+     *
+     * @param value - A string containing the complete data in the view.
+     */
+    updateBuffer(value: string): void;
     /**
      * Save the current buffer in the existing file.
      */
@@ -116,31 +112,9 @@ export declare class EditorViewModel implements IDisposable, IEditorViewModel {
      * Number of spaces to use for a tab.
      */
     tabSize: number;
-    private _updateBuffer();
-    private _startBufferTimer();
     private _mode;
     private _disposed;
-    private _view;
-    private _model;
     private _buffer;
-    /**
-     * The delay in milliseconds between view buffer-fetches.
-     */
-    private _bufferDelay;
-    /**
-     * The id returned by setTimeout.
-     */
-    private _bufferTimeoutId;
-}
-/**
- * The interface to fulfil in order to implement
- * an EditorWidget.
- */
-export interface IEditorWidget {
-    /**
-     * Get the entire contents of the current editor.
-     */
-    getContents(): string;
 }
 /**
  * A widget used for entering text/code.
@@ -152,34 +126,20 @@ export interface IEditorWidget {
  * adhered to, any other text editor widget can be easily
  * swapped in.
  */
-export declare class EditorWidget extends Widget implements IEditorWidget {
-    /**
-     * A signal which is emitted when the view contents change.
-     *
-     * #### Notes
-     * This is designed for the view-model. The data is *not* passed
-     * as the signal argument in order that the view-model can decide
-     * when to pull the potentially large data string from the view.
-     */
-    static contentsChangedSignal: Signal<IEditorWidget, boolean>;
-    /**
-     * A pure delegate for [[contentsChangedSignal]].
-     */
-    static getContentsChanged(item: IEditorWidget): ISignal<IEditorWidget, boolean>;
+export declare class EditorWidget extends Widget {
     /**
      * Construct an EditorWidget.
      */
-    constructor(vm: IEditorViewModel);
-    /**
-     * Get the contents of the current view as a string.
-     */
-    getContents(): string;
+    constructor(model: IEditorModel);
     /**
      * Set the font size in the editor.
      */
     fontSize: string;
     protected onAfterAttach(msg: Message): void;
     protected onResize(msg: ResizeMessage): void;
-    private _viewmodel;
+    private _startBufferTimer();
+    private _model;
     private _editor;
+    private _bufferTimeoutId;
+    private _bufferDelay;
 }

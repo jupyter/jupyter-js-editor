@@ -2,7 +2,7 @@
 | Copyright (c) Jupyter Development Team.
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
-.EditorWidget {
+.Ph-EditorWidget {
   min-width: 50px;
   min-height: 50px;
   border: 1px solid #C0C0C0;

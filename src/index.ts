@@ -16,19 +16,21 @@ import {
 } from 'phosphor-messaging';
 
 import {
-  Signal, ISignal, clearSignalData
-} from 'phosphor-signaling';
-
-import {
   Widget, ResizeMessage
 } from 'phosphor-widget';
 
 
 /**
- * The interface required for an editor model.
+ * An interface required for implementing the editor model
  */
 export
 interface IEditorModel {
+  /**
+   * Updates the buffer stored in the model.
+   *
+   * @param value - A string containing the complete data in the view.
+   */
+  updateBuffer(value: string): void;
   /**
    * Saves the current data in the existing file.
    *
@@ -45,61 +47,11 @@ interface IEditorModel {
    * new file with the same data.
    */
   rename(name: string): void;
-}
-
-
-/**
- * An implementation of IEditorModel.
- */
-export
-class EditorModel implements IEditorModel {
-
-  /**
-   * Save the data to file.
-   */
-  save(data: string): void {
-    // to be delegated to jupyter-js-services.
-    console.log('model save');
-  }
-
-  /**
-   * Rename the current file.
-   */
-  rename(name: string): void {
-    // to be delegated to jupyter-js-services.
-    console.log('model rename');
-  }
-
-  private _filename: string;
-  private _mode: string;
-  private _lineNumbers = true;
-  private _tabSize = 2;
-}
-
-
-/**
- * An interface required for implementing the view-model
- * for an editor.
- */
-export
-interface IEditorViewModel {
-  /**
-   * Save the current text buffer to the file.
-   */
-  save(data: string): void;
-  /**
-   * Rename this file.
-   */
-  rename(name: string): void;
   /**
    * The mode of the editor, eg. for code this would be
    * the language, like 'python' or 'javascript'.
    */
   mode(): string;
-  /**
-   * Sets the view class on on the view model.
-   */
-  setView(view: IEditorWidget): void;
   /**
    * A flag to determine whether to show line numbers.
    */
@@ -114,39 +66,73 @@ interface IEditorViewModel {
   tabSize: number;
 }
 
+
+/**
+ * Interface that must be implemented to set defaults on an EditorModel.
+ */
 export
-class EditorViewModel implements IDisposable, IEditorViewModel {
+interface IEditorConfigOptions {
+  /**
+   * The mode of the view, ie. 'python', 'text' or 'javascript'.
+   */
+  mode?: string;
+  /**
+   * A flag to determine whether to show line numbers.
+   */
+  showLineNumbers?: boolean;
+  /**
+   * A flag to determine whether the view is read-only.
+   */
+  readOnly?: boolean;
+  /**
+   * The number of spaces to use for a tab.
+   */
+  tabSize?: number;
+}
+
+
+/**
+ * The data model behind the editor view.
+ */
+export
+class EditorModel implements IDisposable, IEditorModel {
 
   /**
-   * Construct an editor view model.
+   * Construct an Editor Model.
    */
-  constructor(model: IEditorModel) {
-    this._model = model;
+  constructor(config?: IEditorConfigOptions) {
+    var cfg = config || {};
+    this._mode = config.mode || 'python';
+    this.showLineNumbers = config.showLineNumbers || true;
+    this.readOnly = config.readOnly || false;
+    this.tabSize = config.tabSize || 4;
   }
 
   /**
-   * Set the view object for this view model.
+   * Updates the buffer stored in the model.
+   *
+   * @param value - A string containing the complete data in the view.
    */
-  setView(view: IEditorWidget): void {
-    this._view = view;
-    EditorWidget
-      .getContentsChanged(this._view)
-      .connect(this._startBufferTimer, this);
+  updateBuffer(value: string): void {
+    if (!this.isDisposed) {
+      this._buffer = value;
+    }
   }
 
   /**
    * Save the current buffer in the existing file.
    */
   save(): void {
-    this._updateBuffer();
-    this._model.save(this._buffer);
+    // delegate to jupyter-js-services
+    console.log('model save');
   }
 
   /**
    * Rename the current file.
    */
   rename(name: string): void {
-    this._model.rename(name);
+    // delegate to jupyter-js-services
+    console.log('model rename');
   }
 
   /**
@@ -161,9 +147,6 @@ class EditorViewModel implements IDisposable, IEditorViewModel {
    */
   dispose(): void {
     this._disposed = true;
-    clearSignalData(this);
-    this._model = null;
-    this._view = null;
   }
 
   /**
@@ -188,45 +171,9 @@ class EditorViewModel implements IDisposable, IEditorViewModel {
    */
   tabSize = 2;
 
-  private _updateBuffer(): void {
-    if (!this.isDisposed) {
-      var data = this._view.getContents();
-      this._buffer = data;
-    }
-  }
-
-  private _startBufferTimer(): void {
-    clearTimeout(this._bufferTimeoutId);
-    this._bufferTimeoutId = setTimeout(() => {
-      this._updateBuffer();
-    }, this._bufferDelay);
-  }
-
   private _mode = '';
   private _disposed = false;
-  private _view: IEditorWidget = null;
-  private _model: IEditorModel;
   private _buffer = '';
-  /**
-   * The delay in milliseconds between view buffer-fetches.
-   */
-  private _bufferDelay = 1000;
-  /**
-   * The id returned by setTimeout.
-   */
-  private _bufferTimeoutId = 0;
-}
-
-/**
- * The interface to fulfil in order to implement
- * an EditorWidget.
- */
-export
-interface IEditorWidget {
-  /**
-   * Get the entire contents of the current editor.
-   */
-  getContents(): string;
 }
 
 /**
@@ -240,52 +187,26 @@ interface IEditorWidget {
  * swapped in.
  */
 export
-class EditorWidget extends Widget implements IEditorWidget {
-
-  /**
-   * A signal which is emitted when the view contents change.
-   *
-   * #### Notes
-   * This is designed for the view-model. The data is *not* passed
-   * as the signal argument in order that the view-model can decide
-   * when to pull the potentially large data string from the view.
-   */
-  static contentsChangedSignal = new Signal<IEditorWidget, boolean>();
-
-  /**
-   * A pure delegate for [[contentsChangedSignal]].
-   */
-  static getContentsChanged(item: IEditorWidget): ISignal<IEditorWidget, boolean> {
-    return EditorWidget.contentsChangedSignal.bind(item);
-  }
+class EditorWidget extends Widget {
 
   /**
    * Construct an EditorWidget.
    */
-  constructor(vm: IEditorViewModel) {
+  constructor(model: IEditorModel) {
     super();
-    this.addClass('EditorWidget');
+    this.addClass('Ph-EditorWidget');
 
     var config = {
-      mode: vm.mode(),
-      lineNumbers: vm.showLineNumbers,
-      tabSize: vm.tabSize
+      mode: model.mode(),
+      lineNumbers: model.showLineNumbers,
+      tabSize: model.tabSize
     };
     this._editor = CodeMirror(this.node, config);
     this._editor.on("change", () => {
-      EditorWidget.getContentsChanged(this).emit(true);
+      this._startBufferTimer();
     });
 
-    this._viewmodel = vm;
-    this._viewmodel.setView(this);
-  }
-
-  /**
-   * Get the contents of the current view as a string.
-   */
-  getContents(): string {
-    var doc = this._editor.getDoc();
-    return doc.getValue();
+    this._model = model;
   }
 
   /**
@@ -308,6 +229,17 @@ class EditorWidget extends Widget implements IEditorWidget {
     }
   }
 
-  private _viewmodel: IEditorViewModel;
+  private _startBufferTimer(): void {
+    clearTimeout(this._bufferTimeoutId);
+    this._bufferTimeoutId = setTimeout(() => {
+      var text = this._editor.getDoc().getValue();
+      this._model.updateBuffer(text);
+    }, this._bufferDelay);
+  }
+
+  private _model: IEditorModel;
   private _editor: CodeMirror.Editor;
+
+  private _bufferTimeoutId = 0;
+  private _bufferDelay = 1000;
 }

@@ -12,13 +12,13 @@ import {
 } from 'phosphor-widget';
 
 import {
-  EditorWidget, EditorModel, EditorViewModel
+  EditorWidget, EditorModel
 } from '../../lib/index';
+
 
 function main(): void {
   var model = new EditorModel();
-  var viewmodel = new EditorViewModel(model);
-  var view = new EditorWidget(viewmodel);
+  var view = new EditorWidget(model);
 
   Widget.attach(view, document.getElementById('main'));
   view.update();
