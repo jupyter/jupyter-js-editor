@@ -66,7 +66,6 @@ Supported Runtimes
 The runtime versions which are currently *known to work* are listed below.
 Earlier versions may also work, but come with no guarantees.
 
-- Node 0.12.7+
 - IE 11+
 - Firefox 32+
 - Chrome 38+
@@ -86,5 +85,5 @@ browserify myapp.js -o mybundle.js
 Usage Examples
 --------------
 
-**Note:** This module is fully compatible with Node/Babel/ES6/ES5. Simply
+**Note:** This module is fully compatible with Babel/ES6/ES5. Simply
 omit the type declarations when using a language other than TypeScript.

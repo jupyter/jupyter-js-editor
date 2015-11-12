@@ -342,8 +342,7 @@ class EditorModel implements IDisposable, IEditorModel {
  * #### Notes
  * This class happens to use Codemirror as the hosted widget for
  * text entry, but Codemirror is entirely encapsulated
- * within this class. As long as the IEditorWidget interface is
- * adhered to, any other text editor widget can be easily
+ * within this class so any other text editor widget can be easily
  * swapped in.
  */
 export
@@ -354,7 +353,7 @@ class EditorWidget extends Widget {
    */
   constructor(model: IEditorModel) {
     super();
-    this.addClass('Ph-EditorWidget');
+    this.addClass('jp-EditorWidget');
     this._model = model;
     this._model.changed.connect(this._modelChanged);
 
