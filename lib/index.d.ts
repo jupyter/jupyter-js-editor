@@ -1,5 +1,7 @@
 import { IDisposable } from 'phosphor-disposable';
 import { Message } from 'phosphor-messaging';
+import { IChangedArgs, Property } from 'phosphor-properties';
+import { ISignal, Signal } from 'phosphor-signaling';
 import { Widget, ResizeMessage } from 'phosphor-widget';
 /**
  * An interface required for implementing the editor model
@@ -28,10 +30,18 @@ export interface IEditorModel {
      */
     rename(name: string): void;
     /**
+     * A signal emitted when the editor model state changes.
+     */
+    changed: ISignal<EditorModel, IChangedArgs<any>>;
+    /**
      * The mode of the editor, eg. for code this would be
      * the language, like 'python' or 'javascript'.
      */
-    mode(): string;
+    mode: string;
+    /**
+     * The current state of the buffer.
+     */
+    buffer: string;
     /**
      * A flag to determine whether to show line numbers.
      */
@@ -71,9 +81,124 @@ export interface IEditorConfigOptions {
  */
 export declare class EditorModel implements IDisposable, IEditorModel {
     /**
+     * A signal emitted when the title state changes.
+     *
+     * **See also:** [[changed]]
+     */
+    static changedSignal: Signal<EditorModel, IChangedArgs<any>>;
+    /**
+     * The property descriptor for the mode text.
+     *
+     * This will be used to set the mode of the editor.
+     *
+     * The default value is an empty string.
+     *
+     * **See also:** [[mode]]
+     */
+    static modeProperty: Property<EditorModel, string>;
+    /**
+     * The property descriptor for the showLineNumbers flag.
+     *
+     * This will be used to set whether line numbers are visible
+     * in the editor.
+     *
+     * The default value is `true`.
+     *
+     * **See also:** [[showLineNumbers]]
+     */
+    static showLineNumbersProperty: Property<EditorModel, boolean>;
+    /**
+     * The property descriptor for the readOnly flag.
+     *
+     * This will be used to set whether the editor is read-only,
+     * or if it is editable.
+     *
+     * The default value is `false`.
+     *
+     * **See also:** [[readOnly]]
+     */
+    static readOnlyProperty: Property<EditorModel, boolean>;
+    /**
+     * The property descriptor for the tabSize number.
+     *
+     * This determines the number of spaces to use in place of a tab.
+     *
+     * The default value is `2`.
+     *
+     * **See also** [[tabSize]]
+     */
+    static tabSizeProperty: Property<EditorModel, number>;
+    /**
      * Construct an Editor Model.
      */
     constructor(config?: IEditorConfigOptions);
+    /**
+     * Get the string for the current buffer.
+     */
+    buffer: string;
+    /**
+     * A signal emitted when the editor model state changes.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[changedSignal]].
+     */
+    changed: ISignal<EditorModel, IChangedArgs<any>>;
+    /**
+     * Get the mode for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[modeProperty]].
+     */
+    /**
+     * Set the text for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[modeProperty]].
+     */
+    mode: string;
+    /**
+     * Get the showLineNumbers flag for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[showLineNumbersProperty]].
+     */
+    /**
+     * Set the showLineNumbers flag for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[showLineNumbersProperty]].
+     */
+    showLineNumbers: boolean;
+    /**
+     * Get the readOnly flag for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[readOnlyProperty]].
+     */
+    /**
+     * Set the readOnly flag for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[readOnlyProperty]].
+     */
+    readOnly: boolean;
+    /**
+     * Get the tabSize number for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[tabSizeProperty]].
+     */
+    /**
+     * Set the tabSize number for the editor model.
+     *
+     * #### Notes
+     * This is a pure delegate to the [[tabSizeProperty]]
+     */
+    tabSize: number;
+    /**
+     * Get the disposed status of this object.
+     */
+    isDisposed: boolean;
     /**
      * Updates the buffer stored in the model.
      *
@@ -89,30 +214,9 @@ export declare class EditorModel implements IDisposable, IEditorModel {
      */
     rename(name: string): void;
     /**
-     * The mode of the current editor.
-     */
-    mode(): string;
-    /**
      * Dispose of this object.
      */
     dispose(): void;
-    /**
-     * Get the disposed status of this object.
-     */
-    isDisposed: boolean;
-    /**
-     * Flag that determines whether to show line numbers.
-     */
-    showLineNumbers: boolean;
-    /**
-     * Flag that determines whether the view is read-only.
-     */
-    readOnly: boolean;
-    /**
-     * Number of spaces to use for a tab.
-     */
-    tabSize: number;
-    private _mode;
     private _disposed;
     private _buffer;
 }
@@ -131,13 +235,12 @@ export declare class EditorWidget extends Widget {
      * Construct an EditorWidget.
      */
     constructor(model: IEditorModel);
-    /**
-     * Set the font size in the editor.
-     */
-    fontSize: string;
     protected onAfterAttach(msg: Message): void;
     protected onResize(msg: ResizeMessage): void;
+    private _buildConfig();
+    private _applyConfig(config);
     private _startBufferTimer();
+    private _modelChanged(sender, value);
     private _model;
     private _editor;
     private _bufferTimeoutId;

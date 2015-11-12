@@ -7,6 +7,8 @@
   "dependencies": {
     "phosphor-disposable": "^1.0.4",
     "phosphor-messaging": "^1.0.5",
+    "phosphor-properties": "^2.0.0",
+    "phosphor-signaling": "^1.1.2",
     "phosphor-widget": "^0.9.13"
   },
   "devDependencies": {
