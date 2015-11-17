@@ -226,8 +226,7 @@ export declare class EditorModel implements IDisposable, IEditorModel {
  * #### Notes
  * This class happens to use Codemirror as the hosted widget for
  * text entry, but Codemirror is entirely encapsulated
- * within this class. As long as the IEditorWidget interface is
- * adhered to, any other text editor widget can be easily
+ * within this class so any other text editor widget can be easily
  * swapped in.
  */
 export declare class EditorWidget extends Widget {
