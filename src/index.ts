@@ -7,6 +7,8 @@
 |----------------------------------------------------------------------------*/
 'use strict';
 
+import * as CodeMirror from 'codemirror';
+
 import {
   IDisposable
 } from 'phosphor-disposable';
