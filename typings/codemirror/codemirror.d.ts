@@ -7,9 +7,28 @@ declare function CodeMirror(host: HTMLElement, options?: CodeMirror.EditorConfig
 declare function CodeMirror(callback: (host: HTMLElement) => void , options?: CodeMirror.EditorConfiguration): CodeMirror.Editor;
 
 declare module CodeMirror {
+    export var Doc : CodeMirror.DocConstructor;
+    export var Pos: CodeMirror.PositionConstructor;
     export var Pass: any;
 
     function fromTextArea(host: HTMLTextAreaElement, options?: EditorConfiguration): CodeMirror.EditorFromTextArea;
+
+
+    // findMode* functions are from loading the codemirror/mode/meta module
+    interface modespec {
+      name: string;
+      mode: string;
+    }
+    function findModeByName(name: string): modespec;
+    function findModeByMIME(mime: string): modespec;
+
+    var modes: {
+      [key: string]: any;
+    };
+
+    var mimeModes: {
+        [key: string]: any;
+    }
 
     var version: string;
 
@@ -226,6 +245,14 @@ declare module CodeMirror {
         The margin parameter is optional. When given, it indicates the amount of pixels around the given area that should be made visible as well. */
         scrollIntoView(pos: { left: number; top: number; right: number; bottom: number; }, margin: number): void;
 
+        /** Scrolls the given element into view. pos is a { line, ch } object, in editor-local coordinates.
+        The margin parameter is optional. When given, it indicates the amount of pixels around the given area that should be made visible as well. */
+        scrollIntoView(pos: { line: number, ch: number }, margin?: number): void;
+
+        /** Scrolls the given element into view. pos is a { from, to } object, in editor-local coordinates.
+        The margin parameter is optional. When given, it indicates the amount of pixels around the given area that should be made visible as well. */
+        scrollIntoView(pos: { from: CodeMirror.Position, to: CodeMirror.Position }, margin: number): void;
+
         /** Returns an { left , top , bottom } object containing the coordinates of the cursor position.
         If mode is "local" , they will be relative to the top-left corner of the editable document.
         If it is "page" or not given, they are relative to the top-left corner of the page.
@@ -322,8 +349,15 @@ declare module CodeMirror {
         off(eventName: string, handler: (instance: CodeMirror.Editor) => void ): void;
 
         /** Fires every time the content of the editor is changed. */
-        on(eventName: 'change', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChangeLinkedList) => void ): void;
-        off(eventName: 'change', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChangeLinkedList) => void ): void;
+        on(eventName: 'change', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void ): void;
+        off(eventName: 'change', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void ): void;
+
+        /** Like the "change" event, but batched per operation, passing an
+         * array containing all the changes that happened in the operation.
+         * This event is fired after the operation finished, and display
+         * changes it makes will trigger a new operation. */
+        on(eventName: 'changes', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChange[]) => void ): void;
+        off(eventName: 'changes', handler: (instance: CodeMirror.Editor, change: CodeMirror.EditorChange[]) => void ): void;
 
         /** This event is fired before a change is applied, and its handler may choose to modify or cancel the change.
         The changeObj never has a next property, since this is fired for each individual change, and not batched per operation.
@@ -387,9 +421,12 @@ declare module CodeMirror {
         getTextArea(): HTMLTextAreaElement;
     }
 
-    class Doc {
-        constructor (text: string, mode?: any, firstLineNumber?: number);
+    interface DocConstructor {
+        new (text: string, mode?: any, firstLineNumber?: number, lineSep?: string): Doc;
+        (text: string, mode?: any, firstLineNumber?: number, lineSep?: string): Doc;
+    }
 
+    interface Doc {
         /** Get the current editor content. You can pass it an optional argument to specify the string to be used to separate lines (defaults to "\n"). */
         getValue(seperator?: string): string;
 
@@ -459,6 +496,10 @@ declare module CodeMirror {
         It may be "start" , "end" , "head"(the side of the selection that moves when you press shift + arrow),
         or "anchor"(the fixed side of the selection).Omitting the argument is the same as passing "head".A { line , ch } object will be returned. */
         getCursor(start?: string): CodeMirror.Position;
+
+        /** Retrieves a list of all current selections. These will always be sorted, and never overlap (overlapping selections are merged).
+        Each object in the array contains anchor and head properties referring to {line, ch} objects. */
+        listSelections(): { anchor: CodeMirror.Position; head: CodeMirror.Position }[];
 
         /** Return true if any text is selected. */
         somethingSelected(): boolean;
@@ -544,6 +585,9 @@ declare module CodeMirror {
             insertLeft?: boolean;
         }): CodeMirror.TextMarker;
 
+        /** Returns an array of all the bookmarks and marked ranges found between the given positions. */
+        findMarks(from: CodeMirror.Position, to: CodeMirror.Position): TextMarker[];
+
         /** Returns an array of all the bookmarks and marked ranges present at the given position. */
         findMarksAt(pos: CodeMirror.Position): TextMarker[];
 
@@ -597,12 +641,9 @@ declare module CodeMirror {
         /** Array of strings representing the text that replaced the changed range (split by line). */
         text: string[];
         /**  Text that used to be between from and to, which is overwritten by this change. */
-        removed: string;
-    }
-
-    interface EditorChangeLinkedList extends CodeMirror.EditorChange {
-        /** Points to another change object (which may point to another, etc). */
-        next?: CodeMirror.EditorChangeLinkedList;
+        removed: string[];
+        /**  String representing the origin of the change event and wether it can be merged with history */
+        origin: string;
     }
 
     interface EditorChangeCancellable extends CodeMirror.EditorChange {
@@ -610,6 +651,11 @@ declare module CodeMirror {
         update(from?: CodeMirror.Position, to?: CodeMirror.Position, text?: string): void;
 
         cancel(): void;
+    }
+
+    interface PositionConstructor {
+        new (line: number, ch: number): Position;
+        (line: number, ch: number): Position;
     }
 
     interface Position {
@@ -759,6 +805,12 @@ declare module CodeMirror {
         You should usually leave it at its default, 10. Can be set to Infinity to make sure the whole document is always rendered,
         and thus the browser's text search works on it. This will have bad effects on performance of big documents. */
         viewportMargin?: number;
+
+        /** Optional lint configuration to be used in conjunction with CodeMirror's linter addon. */
+        lint?: boolean | LintOptions;
+
+    /** Optional value to be used in conduction with CodeMirror’s placeholder add-on. */
+    placeholder?: string;
     }
 
     interface TextMarkerOptions {
@@ -771,8 +823,8 @@ declare module CodeMirror {
         /** Like inclusiveLeft , but for the right side. */
         inclusiveRight?: boolean;
 
-        /** Atomic ranges act as a single unit when cursor movement is concerned � i.e. it is impossible to place the cursor inside of them.
-        In atomic ranges, inclusiveLeft and inclusiveRight have a different meaning � they will prevent the cursor from being placed
+        /** Atomic ranges act as a single unit when cursor movement is concerned — i.e. it is impossible to place the cursor inside of them.
+        In atomic ranges, inclusiveLeft and inclusiveRight have a different meaning — they will prevent the cursor from being placed
         respectively directly before and directly after the range. */
         atomic?: boolean;
 
@@ -784,9 +836,18 @@ declare module CodeMirror {
         The "clear" event fired on the range handle can be used to be notified when this happens. */
         clearOnEnter?: boolean;
 
+        /** Determines whether the mark is automatically cleared when it becomes empty. Default is true. */
+        clearWhenEmpty?: boolean;
+
         /** Use a given node to display this range.Implies both collapsed and atomic.
         The given DOM node must be an inline element(as opposed to a block element). */
         replacedWith?: HTMLElement;
+
+        /** When replacedWith is given, this determines whether the editor will
+         * capture mouse and drag events occurring in this widget. Default is
+         * false—the events will be left alone for the default browser handler,
+         * or specific handlers on the widget, to capture. */
+        handleMouseEvents?: boolean;
 
         /** A read - only span can, as long as it is not cleared, not be modified except by calling setValue to reset the whole document.
         Note: adding a read - only span currently clears the undo history of the editor,
@@ -801,6 +862,12 @@ declare module CodeMirror {
 
         /** Equivalent to startStyle, but for the rightmost span. */
         endStyle?: string;
+
+        /** A string of CSS to be applied to the covered text. For example "color: #fe3". */
+        css?: string;
+
+        /** When given, will give the nodes created for this span a HTML title attribute with the given value. */
+        title?: string;
 
         /** When the target document is linked to other documents, you can set shared to true to make the marker appear in all documents.
         By default, a marker appears only in its target document. */
@@ -916,4 +983,137 @@ declare module CodeMirror {
          */
         current(): string;
     }
+
+    /**
+     * A Mode is, in the simplest case, a lexer (tokenizer) for your language — a function that takes a character stream as input,
+     * advances it past a token, and returns a style for that token. More advanced modes can also handle indentation for the language.
+     */
+    interface Mode<T> {
+        /**
+         * This function should read one token from the stream it is given as an argument, optionally update its state,
+         * and return a style string, or null for tokens that do not have to be styled. Multiple styles can be returned, separated by spaces.
+         */
+        token(stream: StringStream, state: T): string;
+
+        /**
+         * A function that produces a state object to be used at the start of a document.
+         */
+        startState?: () => T;
+        /**
+         * For languages that have significant blank lines, you can define a blankLine(state) method on your mode that will get called
+         * whenever a blank line is passed over, so that it can update the parser state.
+         */
+        blankLine?: (state: T) => void;
+        /**
+         * Given a state returns a safe copy of that state.
+         */
+        copyState?: (state: T) => T;
+
+        /**
+         * The indentation method should inspect the given state object, and optionally the textAfter string, which contains the text on
+         * the line that is being indented, and return an integer, the amount of spaces to indent.
+         */
+        indent?: (state: T, textAfter: string) => number;
+
+        /** The four below strings are used for working with the commenting addon. */
+        /**
+         * String that starts a line comment.
+         */
+        lineComment?: string;
+        /**
+         * String that starts a block comment.
+         */
+        blockCommentStart?: string;
+        /**
+         * String that ends a block comment.
+         */
+        blockCommentEnd?: string;
+        /**
+         * String to put at the start of continued lines in a block comment.
+         */
+        blockCommentLead?: string;
+
+        /**
+         * Trigger a reindent whenever one of the characters in the string is typed.
+         */
+        electricChars?: string
+        /**
+         * Trigger a reindent whenever the regex matches the part of the line before the cursor.
+         */
+        electricinput?: RegExp
+    }
+
+    /**
+     * A function that, given a CodeMirror configuration object and an optional mode configuration object, returns a mode object.
+     */
+    interface ModeFactory<T> {
+        (config: CodeMirror.EditorConfiguration, modeOptions?: any): Mode<T>
+    }
+
+    /**
+     * id will be the id for the defined mode. Typically, you should use this second argument to defineMode as your module scope function
+     * (modes should not leak anything into the global scope!), i.e. write your whole mode inside this function.
+     */
+    function defineMode(id: string, modefactory: ModeFactory<any>): void;
+
+    /**
+     * The first argument is a configuration object as passed to the mode constructor function, and the second argument
+     * is a mode specification as in the EditorConfiguration mode option.
+     */
+    function getMode<T>(config: CodeMirror.EditorConfiguration, mode: any): Mode<T>;
+
+    /**
+     * Utility function from the overlay.js addon that allows modes to be combined. The mode given as the base argument takes care of
+     * most of the normal mode functionality, but a second (typically simple) mode is used, which can override the style of text.
+     * Both modes get to parse all of the text, but when both assign a non-null style to a piece of code, the overlay wins, unless
+     * the combine argument was true and not overridden, or state.overlay.combineTokens was true, in which case the styles are combined.
+     */
+    function overlayMode<T, S>(base: Mode<T>, overlay: Mode<S>, combine?: boolean): Mode<any>
+
+    /**
+     * async specifies that the lint process runs asynchronously. hasGutters specifies that lint errors should be displayed in the CodeMirror
+     * gutter, note that you must use this in conjunction with [ "CodeMirror-lint-markers" ] as an element in the gutters argument on
+     * initialization of the CodeMirror instance.
+     */
+    interface LintStateOptions {
+        async: boolean;
+        hasGutters: boolean;
+    }
+
+    /**
+     * Adds the getAnnotations callback to LintStateOptions which may be overridden by the user if they choose use their own
+     * linter.
+     */
+    interface LintOptions extends LintStateOptions {
+        getAnnotations: AnnotationsCallback;
+    }
+
+    /**
+     * A function that calls the updateLintingCallback with any errors found during the linting process.
+     */
+    interface AnnotationsCallback {
+        (content: string, updateLintingCallback: UpdateLintingCallback, options: LintStateOptions, codeMirror: Editor): void;
+    }
+
+    /**
+     * A function that, given an array of annotations, updates the CodeMirror linting GUI with those annotations
+     */
+    interface UpdateLintingCallback {
+        (codeMirror: Editor, annotations: Annotation[]): void;
+    }
+
+    /**
+     * An annotation contains a description of a lint error, detailing the location of the error within the code, the severity of the error,
+     * and an explaination as to why the error was thrown.
+     */
+    interface Annotation {
+        from: Position;
+        message?: string;
+        severity?: string;
+        to?: Position;
+    }
+}
+
+declare module "codemirror" {
+    export = CodeMirror;
 }
