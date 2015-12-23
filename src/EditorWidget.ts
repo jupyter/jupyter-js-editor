@@ -95,24 +95,11 @@ class CodeMirrorWidget extends Widget {
    * position of the cursor in the new text.
    */
   protected updateText(text: string): void {
-    let doc = this._editor.getDoc();
-    let oldText = doc.getValue();
-    if (oldText !== text) {
-      // TODO: do something smart with all the selections
-
-      let oldCursor = doc.indexFromPos(doc.getCursor());
-      let cursor = 0;
-      if (oldCursor === oldText.length) {
-        // if the cursor was at the end, keep it at the end
-        cursor = text.length;
-      } else {
-        let fragment = oldText.substr(oldCursor, 10);
-        cursor = diffMatchPatch.match_main(text, fragment, oldCursor);
-      }
-
-      doc.setValue(text);
-      doc.setCursor(doc.posFromIndex(cursor));
+    if (!this.isAttached || !this.isVisible) {
+      this._dirty = true;
+      return;
     }
+    this.update();
   }
 
   /**
@@ -174,7 +161,15 @@ class CodeMirrorWidget extends Widget {
    * Handle afterAttach messages.
    */
   protected onAfterAttach(msg: Message): void {
+    if (this._dirty) this.updateText(this._model.text);
     this._editor.refresh();
+  }
+
+  /**
+   * A message handler invoked on an `'after-show'` message.
+   */
+  protected onAfterShow(msg: Message): void {
+    if (this._dirty) this.updateText(this._model.text);
   }
 
   /**
@@ -185,6 +180,32 @@ class CodeMirrorWidget extends Widget {
       this._editor.refresh();
     } else {
       this._editor.setSize(msg.width, msg.height);
+    }
+  }
+
+  /**
+   * A message handler invoked on an `'update-request'` message.
+   */
+  protected onUpdateRequest(msg: Message): void {
+    this._dirty = false;
+    let doc = this._editor.getDoc();
+    let oldText = doc.getValue();
+    let text = this._model.text;
+    if (oldText !== text) {
+      // TODO: do something smart with all the selections
+
+      let oldCursor = doc.indexFromPos(doc.getCursor());
+      let cursor = 0;
+      if (oldCursor === oldText.length) {
+        // if the cursor was at the end, keep it at the end
+        cursor = text.length;
+      } else {
+        let fragment = oldText.substr(oldCursor, 10);
+        cursor = diffMatchPatch.match_main(text, fragment, oldCursor);
+      }
+
+      doc.setValue(text);
+      doc.setCursor(doc.posFromIndex(cursor));
     }
   }
 
@@ -231,4 +252,5 @@ class CodeMirrorWidget extends Widget {
 
   private _editor: CodeMirror.Editor = null;
   private _model: IEditorViewModel = null;
+  private _dirty = false;
 }
