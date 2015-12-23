@@ -36,7 +36,7 @@
     "build:src": "tsc --project src && node scripts/copycss.js",
     "build:test": "tsc --project test",
     "build:example": "tsc --project example && browserify -t browserify-css example/build/index.js -o example/build/bundle.js",
-    "build": "npm run build:src && npm run build:example",
+    "build": "npm run build:src && npm run build:test && npm run build:example",
     "docs": "typedoc --options scripts/tdoptions.json",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
