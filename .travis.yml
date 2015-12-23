@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '0.12'
+sudo: false
+env:
+  matrix:
+  - GROUP=
+  global:
+  - GH_REF: github.com/jupyter/jupyter-js-editor.git
+  - secure: FYIoI1wVd86gMQWX7+5XEq8qBjEicdJy3reHy0sN8cuqfklL9WGgkFz7vQ2s0LSiTL0XS31rTvlWEeNnR6RnqcWqyjGfZZ7TzXFrTm0D3FHQxnkCDJmNZd9NqQKFXLdQi18xBWBLEmrpk73lUADPQRBrsvOnrsezLNpgRknaQ3r420J+ujj9ohCZecmbbTjWEmYcOxXBMwMryiwoqO06M45O9PMZdWWr4XPFF2eTHJlzj3TvSldwkrBU4TRD/gzJuYS3eyyRNUb9EYUfq4GCAS9tNixGZXT6Aoj/FsVWDvA8BcquD0/u8749ZBIVCJDt/zmE02uoBebQDGIpaH9Xwb7yqbfN2l78J4VZBIcwB7Ty7Zb3jc02h5tkzhnfi+tqi2Z4IoylUatSkCkxoaKv24ONTpihqQvlS0AoZerXPenLkVmB375l4tp35gH4+aDG8hc56/aY5ospORaRtch0A3pfBot9YCkmrNHxkxpqSScGN3gR9Ln1MAPSselB5znrylqp6LVBr5GXcQluAntVzDDzxWOgKfcd4fROZrSwEbKSGTHuLq6nZpcGNyQrcI6lAmYMEzEX5HxB7GvYm5lUSyV65GFWlan/+or4j4Xjol3IbyF5h93IarBZIx8rw2TbEFOIM4K+9bGXTpEnMuE7FCi2SJ4YCn2j4ctvrY6XD2s=
+install:
+- bash ./scripts/travis_install.sh
+script:
+- bash ./scripts/travis_script.sh
+after_success:
+- bash ./scripts/travis_after_success.sh
