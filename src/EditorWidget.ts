@@ -170,6 +170,7 @@ class CodeMirrorWidget extends Widget {
    */
   protected onAfterShow(msg: Message): void {
     if (this._dirty) this.updateText(this._model.text);
+    this._editor.refresh();
   }
 
   /**
