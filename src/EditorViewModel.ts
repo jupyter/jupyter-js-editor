@@ -69,7 +69,7 @@ interface IEditorViewModel {
  * Interface that must be implemented to set defaults on an EditorViewModelPrivate.
  */
 export
-interface IEditorConfigOptions {
+interface IEditorViewModelOptions {
   /**
    * The initial text in the text editor.
    */
@@ -119,11 +119,8 @@ class EditorViewModel implements IEditorViewModel {
   /**
    * Construct an Editor Model.
    */
-  constructor(config?: IEditorConfigOptions) {
-    config = config || {};
-    for (let prop of Object.keys(config)) {
-      (this as any)[prop] = (config as any)[prop];
-    }
+  constructor(options?: IEditorViewModelOptions) {
+    if (options) EditorViewModelPrivate.initFrom(this, options);
   }
 
   /**
@@ -282,7 +279,7 @@ namespace EditorViewModelPrivate {
    */
   export
   const lineNumbersProperty = new Property<IEditorViewModel, boolean>({
-    name: 'showLineNumbers',
+    name: 'lineNumbers',
     value: true,
     notify: EditorViewModelPrivate.stateChangedSignal
   });
@@ -316,5 +313,33 @@ namespace EditorViewModelPrivate {
     value: 4,
     notify: EditorViewModelPrivate.stateChangedSignal
   });
+
+  /**
+   * Initialize an editor view model from an options object.
+   */
+  export
+  function initFrom(model: EditorViewModel, options: IEditorViewModelOptions): void {
+    if (options.mimetype !== void 0) {
+      model.mimetype = options.mimetype;
+    }
+    if (options.filename !== void 0) {
+      model.filename = options.filename;
+    }
+    if (options.fixedHeight !== void 0) {
+      model.fixedHeight = options.fixedHeight;
+    }
+    if (options.lineNumbers !== void 0) {
+      model.lineNumbers = options.lineNumbers;
+    }
+    if (options.readOnly !== void 0) {
+      model.readOnly = options.readOnly;
+    }
+    if (options.text !== void 0) {
+      model.text = options.text;
+    }
+    if (options.tabSize !== void 0) {
+      model.tabSize = options.tabSize;
+    }
+  }
 
 }
