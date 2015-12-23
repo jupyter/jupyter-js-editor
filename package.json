@@ -16,7 +16,7 @@
     "browserify-css": "^0.6.1",
     "browserify-istanbul": "^0.2.1",
     "codemirror": "^5.8.0",
-    "expect.js": "^0.3.1",
+    "fs-extra": "^0.26.3",
     "glob-copy": "^0.1.0",
     "istanbul": "^0.3.18",
     "karma": "^0.13.9",
