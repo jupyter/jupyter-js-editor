@@ -20,6 +20,7 @@ declare module CodeMirror {
       mode: string;
     }
     function findModeByName(name: string): modespec;
+    function findModeByFileName(name: string): modespec;
     function findModeByMIME(mime: string): modespec;
 
     var modes: {
