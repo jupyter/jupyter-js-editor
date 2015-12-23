@@ -5,11 +5,7 @@
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-'use-strict';
-
-import {
-  Widget
-} from 'phosphor-widget';
+'use strict';
 
 import {
   EditorWidget, EditorModel

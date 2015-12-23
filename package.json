@@ -32,10 +32,10 @@
     "typescript": "^1.6.2"
   },
   "scripts": {
-    "clean": "rimraf docs && rimraf lib && rimraf test/build",
+    "clean": "rimraf docs && rimraf lib && rimraf test/build && rimraf example/build",
     "build:src": "tsc --project src && node scripts/copycss.js",
     "build:test": "tsc --project test",
-    "build:example": "tsc --project example && browserify -t browserify-css example/build/index.js -o example/bundle.js",
+    "build:example": "tsc --project example && browserify -t browserify-css example/build/index.js -o example/build/bundle.js",
     "build": "npm run build:src && npm run build:example",
     "docs": "typedoc --options scripts/tdoptions.json",
     "postinstall": "npm dedupe",
