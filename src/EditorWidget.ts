@@ -161,7 +161,7 @@ class CodeMirrorWidget extends Widget {
    * Handle afterAttach messages.
    */
   protected onAfterAttach(msg: Message): void {
-    if (this._dirty) this.updateText(this._model.text);
+    if (this._dirty) this.update();
     this._editor.refresh();
   }
 
@@ -169,7 +169,7 @@ class CodeMirrorWidget extends Widget {
    * A message handler invoked on an `'after-show'` message.
    */
   protected onAfterShow(msg: Message): void {
-    if (this._dirty) this.updateText(this._model.text);
+    if (this._dirty) this.update();
     this._editor.refresh();
   }
 
