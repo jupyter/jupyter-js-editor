@@ -69,7 +69,7 @@ Follow the source build instructions first.
 npm run serve:example
 ```
 
-Navigate to `example/`.
+Navigate to the served address.
 
 
 Supported Runtimes
