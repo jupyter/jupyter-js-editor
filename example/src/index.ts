@@ -20,7 +20,7 @@ function main(): void {
   var model = new EditorModel();
   var view = new EditorWidget(model);
 
-  Widget.attach(view, document.getElementById('main'));
+  view.attach(document.getElementById('main'));
   view.update();
 
   window.onresize = () => view.update();
