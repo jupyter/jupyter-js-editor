@@ -5,11 +5,7 @@
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-'use-strict';
-
-import {
-  Widget
-} from 'phosphor-widget';
+'use strict';
 
 import {
   EditorWidget, EditorModel
@@ -20,7 +16,7 @@ function main(): void {
   var model = new EditorModel();
   var view = new EditorWidget(model);
 
-  Widget.attach(view, document.getElementById('main'));
+  view.attach(document.getElementById('main'));
   view.update();
 
   window.onresize = () => view.update();
