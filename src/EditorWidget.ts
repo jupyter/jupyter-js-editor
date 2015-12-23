@@ -66,6 +66,9 @@ class CodeMirrorWidget extends Widget {
     this._model = model;
     this._editor = CodeMirror(this.node);
     this.updateMimetype(model.mimetype);
+    this.updateFilename(model.filename);
+    this.updateReadOnly(model.readOnly);
+    this.updateTabSize(model.tabSize);
     this.updateLineNumbers(model.lineNumbers);
     this.updateFixedHeight(model.fixedHeight);
     this.updateText(model.text);
