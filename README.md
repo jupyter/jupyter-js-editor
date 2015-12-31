@@ -3,8 +3,9 @@ Jupyter JS Editor
 
 Code/text editor for Jupyter.
 
-[API Docs](http://jupyter.github.io/jupyter-js-editor/)
+[API Docs](http://jupyter.github.io/jupyter-js-editor/api)
 
+[Live Example](http://jupyter.github.io/jupyter-js-editor/example)
 
 Package Install
 ---------------
@@ -66,10 +67,10 @@ Run the Example
 Follow the source build instructions first.
 
 ```bash
-npm run serve:example
+npm run build:example
 ```
 
-Navigate to the served address.
+Navigate to `example/index.html`.
 
 
 Supported Runtimes

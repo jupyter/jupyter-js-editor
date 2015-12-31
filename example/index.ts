@@ -1,6 +1,9 @@
 /*-----------------------------------------------------------------------------
-| Copyright (c) Jupyter Development Team.
-| Distributed under the terms of the Modified BSD License.
+| Copyright (c) 2014-2015, PhosphorJS Contributors
+|
+| Distributed under the terms of the BSD 3-Clause License.
+|
+| The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 'use strict';
 
@@ -8,18 +11,15 @@ import {
   EditorViewModel, CodeMirrorWidget
 } from '../lib/index';
 
-let initialCode = `def f(n):
-    for i in range(n):
-        print(i)
-`;
 
 function main(): void {
-  let textModel = new EditorViewModel();
-  textModel.text = initialCode;
-  textModel.mimetype = 'text/x-python';
-  textModel.lineNumbers = true;
-  let widget = new CodeMirrorWidget(textModel);
-  widget.attach(document.body);
+  var model = new EditorViewModel();
+  var view = new CodeMirrorWidget(model);
+
+  view.attach(document.getElementById('main'));
+  view.update();
+
+  window.onresize = () => view.update();
 }
 
-main();
+window.onload = main;
