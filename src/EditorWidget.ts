@@ -33,6 +33,13 @@ import {
 } from './EditorViewModel';
 
 
+declare var require: {
+  <T>(path: string): T;
+  (paths: string[], callback: (...modules: any[]) => void): void;
+  ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
+};
+
+
 /**
  * The class name added to CodeMirrorWidget instances.
  */
@@ -114,9 +121,7 @@ class CodeMirrorWidget extends Widget {
     } else {
       let info = CodeMirror.findModeByMIME(mimetype);
       if (info) {
-        this._loadCodeMirrorMode(info.mode).then(() => {
-          this._editor.setOption('mode', mimetype);
-        })
+        this._loadCodeMirrorMode(info.mode);
       }
     }
   }
@@ -130,9 +135,7 @@ class CodeMirrorWidget extends Widget {
     }
     let info = CodeMirror.findModeByFileName(filename);
     if (info) {
-      this._loadCodeMirrorMode(info.mode).then(() => {
-        this._editor.setOption('mode', info.mode);
-      });
+      this._loadCodeMirrorMode(info.mode);
     }
   }
 
@@ -242,12 +245,13 @@ class CodeMirrorWidget extends Widget {
   /**
    * Load a CodeMirror mode asynchronously.
    */
-  private _loadCodeMirrorMode(mode: string): Promise<any> {
-    // load codemirror mode module, returning a promise.
+  private _loadCodeMirrorMode(mode: string): void {
+    // load codemirror mode module, and set the mode
     if (CodeMirror.modes.hasOwnProperty(mode)) {
-      return Promise.resolve();
+      this._editor.setOption('mode', mode);
     } else {
-      return System.import(`codemirror/mode/${mode}/${mode}`);
+      require(`codemirror/mode/${mode}/${mode}.js`);
+      this._editor.setOption('mode', mode);
     }
   }
 

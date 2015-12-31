@@ -17,6 +17,7 @@ function main(): void {
   var view = new CodeMirrorWidget(model);
 
   view.attach(document.getElementById('main'));
+  model.filename = 'test.js'
   view.update();
 
   window.onresize = () => view.update();

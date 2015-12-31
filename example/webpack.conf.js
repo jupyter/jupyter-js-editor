@@ -2,7 +2,8 @@
 module.exports = {
   entry: './example/index.ts',
   output: {
-    filename: './example/bundle.js'
+    path: './example',
+    filename: 'bundle.js'
   },
   resolve: {
     extensions: ['', '.ts', '.js']
