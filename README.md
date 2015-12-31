@@ -60,6 +60,18 @@ npm run docs
 Navigate to `docs/index.html`.
 
 
+Run the Example
+---------------
+
+Follow the source build instructions first.
+
+```bash
+npm run serve:example
+```
+
+Navigate to the served address.
+
+
 Supported Runtimes
 ------------------
 
@@ -69,17 +81,6 @@ Earlier versions may also work, but come with no guarantees.
 - IE 11+
 - Firefox 32+
 - Chrome 38+
-
-
-Bundle for the Browser
-----------------------
-
-Follow the package install instructions first.
-
-```bash
-npm install --save-dev browserify
-browserify myapp.js -o mybundle.js
-```
 
 
 Usage Examples

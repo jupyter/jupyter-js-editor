@@ -5,11 +5,11 @@
 import expect = require('expect.js');
 
 
-describe('jupyter.editor', () => {
+describe('jupyter-js-editor', () => {
 
-  describe('EditorWidget', () => {
+  describe('CodeMirrorWidget', () => {
 
-    it('should always pass', () => {
+    it('should pass', () => {
 
     });
 
