@@ -5,7 +5,7 @@
 import expect = require('expect.js');
 
 import {
-  EditorWidget, EditorModel
+  EditorViewModel, CodeMirrorWidget
 } from '../../lib';
 
 
@@ -14,8 +14,8 @@ describe('jupyter-js-editor', () => {
   describe('CodeMirrorWidget', () => {
 
     it('should always pass', () => {
-        let model = new EditorModel();
-        let widget = new EditorWidget(model);
+        let model = new EditorViewModel();
+        let widget = new CodeMirrorWidget(model);
     });
 
   });

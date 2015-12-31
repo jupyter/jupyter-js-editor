@@ -66,10 +66,10 @@ Run the Example
 Follow the source build instructions first.
 
 ```bash
-npm run serve:example
+npm run build:example
 ```
 
-Navigate to the served address.
+Navigate to `example/index.html`.
 
 
 Supported Runtimes
