@@ -1,24 +1,12 @@
-<<<<<<< HEAD
-=======
+
 var path = require('path');
 
->>>>>>> a21d194... Switch to webpack
 module.exports = function (config) {
   config.set({
     basePath: '..',
     browsers: ['Firefox'],
     frameworks: ['mocha'],
     reporters: ['mocha', 'coverage'],
-<<<<<<< HEAD
-    files: [
-      { pattern: 'lib/*.*', included: false },
-      { pattern: 'package.json', included: false },
-      { pattern: 'node_modules/**/*.*', included: false },
-      { pattern: 'test/build/index.*', included: false },
-      'node_modules/steal/steal.js',
-      'test/karma.bootstrap.js'
-    ],
-=======
     preprocessors: { 'test/src/*.ts': ['webpack'] },
     files: ['test/src/*.ts'],
     webpack: {
@@ -40,7 +28,6 @@ module.exports = function (config) {
         ]
       }
     },
->>>>>>> a21d194... Switch to webpack
     coverageReporter: {
       reporters : [
         { 'type': 'text' },
