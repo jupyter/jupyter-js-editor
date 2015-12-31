@@ -3,8 +3,9 @@ Jupyter JS Editor
 
 Code/text editor for Jupyter.
 
-[API Docs](http://jupyter.github.io/jupyter-js-editor/)
+[API Docs](http://jupyter.github.io/jupyter-js-editor/api)
 
+[Live Example](http://jupyter.github.io/jupyter-js-editor/example)
 
 Package Install
 ---------------
