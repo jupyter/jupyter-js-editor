@@ -250,8 +250,52 @@ class CodeMirrorWidget extends Widget {
     if (CodeMirror.modes.hasOwnProperty(mode)) {
       this._editor.setOption('mode', mode);
     } else {
-      require(`codemirror/mode/${mode}/${mode}.js`);
-      this._editor.setOption('mode', mode);
+      switch(mode) {
+      case 'python':
+        require.ensure(['codemirror/mode/python/python'], require => {
+          require('codemirror/mode/python/python');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      case 'javascript':
+      case 'typescript':
+        require.ensure(['codemirror/mode/javascript/javascript'], require => {
+          require('codemirror/mode/javascript/javascript');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      case 'css':
+        require.ensure(['codemirror/mode/css/css'], require => {
+          require('codemirror/mode/css/css');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      case 'julia':
+        require.ensure(['codemirror/mode/julia/julia'], require => {
+          require('codemirror/mode/julia/julia');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      case 'r':
+        require.ensure(['codemirror/mode/r/r'], require => {
+          require('codemirror/mode/r/r');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      case 'markdown':
+        require.ensure(['codemirror/mode/markdown/markdown'], require => {
+          require('codemirror/mode/markdown/');
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      default:
+        require.ensure([], require => {
+          require(`codemirror/mode/${mode}/${mode}.js`);
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      }
+
     }
   }
 
