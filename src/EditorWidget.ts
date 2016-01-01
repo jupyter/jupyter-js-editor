@@ -271,8 +271,7 @@ class CodeMirrorWidget extends Widget {
         break;
       default:
         // Load the remaining mode bundle asynchronously.
-        require.ensure([], require => {
-          require(`codemirror/mode/${mode}/${mode}.js`);
+        require([`codemirror/mode/${mode}/${mode}.js`], () => {
           this._editor.setOption('mode', mode);
         });
         break;

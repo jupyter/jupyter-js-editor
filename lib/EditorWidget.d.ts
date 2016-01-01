@@ -67,7 +67,7 @@ export declare class CodeMirrorWidget extends Widget {
      */
     protected onModelStateChanged(sender: IEditorViewModel, args: IChangedArgs<any>): void;
     /**
-     * Load a CodeMirror mode.
+     * Load and set a CodeMirror mode.
      */
     private _loadCodeMirrorMode(mode);
     private _editor;
