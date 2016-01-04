@@ -114,9 +114,7 @@ class CodeMirrorWidget extends Widget {
     } else {
       let info = CodeMirror.findModeByMIME(mimetype);
       if (info) {
-        this._loadCodeMirrorMode(info.mode).then(() => {
-          this._editor.setOption('mode', mimetype);
-        })
+        this._loadCodeMirrorMode(info.mode);
       }
     }
   }
@@ -130,9 +128,7 @@ class CodeMirrorWidget extends Widget {
     }
     let info = CodeMirror.findModeByFileName(filename);
     if (info) {
-      this._loadCodeMirrorMode(info.mode).then(() => {
-        this._editor.setOption('mode', info.mode);
-      });
+      this._loadCodeMirrorMode(info.mode);
     }
   }
 
@@ -240,14 +236,46 @@ class CodeMirrorWidget extends Widget {
   }
 
   /**
-   * Load a CodeMirror mode asynchronously.
+   * Load and set a CodeMirror mode.
    */
-  private _loadCodeMirrorMode(mode: string): Promise<any> {
-    // load codemirror mode module, returning a promise.
+  private _loadCodeMirrorMode(mode: string): void {
     if (CodeMirror.modes.hasOwnProperty(mode)) {
-      return Promise.resolve();
+      this._editor.setOption('mode', mode);
     } else {
-      return System.import(`codemirror/mode/${mode}/${mode}`);
+      // Bundle common modes.
+      switch(mode) {
+      case 'python':
+        require('codemirror/mode/python/python');
+        this._editor.setOption('mode', mode);
+        break;
+      case 'javascript':
+      case 'typescript':
+        require('codemirror/mode/javascript/javascript');
+        this._editor.setOption('mode', mode);
+        break;
+      case 'css':
+        require('codemirror/mode/css/css');
+        this._editor.setOption('mode', mode);
+        break;
+      case 'julia':
+        require('codemirror/mode/julia/julia');
+        this._editor.setOption('mode', mode);
+        break;
+      case 'r':
+        require('codemirror/mode/r/r');
+        this._editor.setOption('mode', mode);
+        break;
+      case 'markdown':
+        require('codemirror/mode/markdown/markdown');
+        this._editor.setOption('mode', mode);
+        break;
+      default:
+        // Load the remaining mode bundle asynchronously.
+        require([`codemirror/mode/${mode}/${mode}.js`], () => {
+          this._editor.setOption('mode', mode);
+        });
+        break;
+      }
     }
   }
 

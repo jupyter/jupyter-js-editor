@@ -11,7 +11,7 @@
   "files": [
     "../typings/es6-promise.d.ts",
     "../typings/codemirror/codemirror.d.ts",
-    "../typings/systemjs/systemjs.d.ts",
+    "../typings/requirejs/requirejs.d.ts",
     "../typings/diff-match-patch/diff-match-patch.d.ts",
     "index.ts"
   ]
