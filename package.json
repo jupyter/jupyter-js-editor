@@ -11,7 +11,7 @@
     "phosphor-messaging": "^1.0.6",
     "phosphor-properties": "^2.0.0",
     "phosphor-signaling": "^1.2.0",
-    "phosphor-widget": "^1.0.0-beta.8"
+    "phosphor-widget": "^1.0.0-rc.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.6",
