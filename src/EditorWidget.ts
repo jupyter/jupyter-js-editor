@@ -79,6 +79,7 @@ class CodeMirrorWidget extends Widget {
     model.stateChanged.connect(this.onModelStateChanged, this);
   }
 
+
   /**
    * Update whether the editor has a fixed maximum height.
    */
@@ -114,7 +115,7 @@ class CodeMirrorWidget extends Widget {
     } else {
       let info = CodeMirror.findModeByMIME(mimetype);
       if (info) {
-        this._loadCodeMirrorMode(info.mode);
+        this.loadCodeMirrorMode(info.mode);
       }
     }
   }
@@ -128,7 +129,7 @@ class CodeMirrorWidget extends Widget {
     }
     let info = CodeMirror.findModeByFileName(filename);
     if (info) {
-      this._loadCodeMirrorMode(info.mode);
+      this.loadCodeMirrorMode(info.mode);
     }
   }
 
@@ -237,42 +238,47 @@ class CodeMirrorWidget extends Widget {
 
   /**
    * Load and set a CodeMirror mode.
+   *
+   * #### Notes
+   * This assumes WebPack as the module loader.
+   * It can be overriden by subclasses.
    */
-  private _loadCodeMirrorMode(mode: string): void {
+  protected loadCodeMirrorMode(mode: string): void {
+    let editor = this._editor;
     if (CodeMirror.modes.hasOwnProperty(mode)) {
-      this._editor.setOption('mode', mode);
+      editor.setOption('mode', mode);
     } else {
       // Bundle common modes.
       switch(mode) {
       case 'python':
         require('codemirror/mode/python/python');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       case 'javascript':
       case 'typescript':
         require('codemirror/mode/javascript/javascript');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       case 'css':
         require('codemirror/mode/css/css');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       case 'julia':
         require('codemirror/mode/julia/julia');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       case 'r':
         require('codemirror/mode/r/r');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       case 'markdown':
         require('codemirror/mode/markdown/markdown');
-        this._editor.setOption('mode', mode);
+        editor.setOption('mode', mode);
         break;
       default:
         // Load the remaining mode bundle asynchronously.
         require([`codemirror/mode/${mode}/${mode}.js`], () => {
-          this._editor.setOption('mode', mode);
+          editor.setOption('mode', mode);
         });
         break;
       }

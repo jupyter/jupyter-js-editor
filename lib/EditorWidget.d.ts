@@ -68,8 +68,12 @@ export declare class CodeMirrorWidget extends Widget {
     protected onModelStateChanged(sender: IEditorViewModel, args: IChangedArgs<any>): void;
     /**
      * Load and set a CodeMirror mode.
+     *
+     * #### Notes
+     * This assumes WebPack as the module loader.
+     * It can be overriden by subclasses.
      */
-    private _loadCodeMirrorMode(mode);
+    protected loadCodeMirrorMode(mode: string): void;
     private _editor;
     private _model;
     private _dirty;
