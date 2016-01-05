@@ -51,6 +51,12 @@ const FIXED_HEIGHT_CLASS = 'jp-mod-fixedHeight';
 let diffMatchPatch = new dmp.diff_match_patch();
 
 
+export
+interface IEditorWidget extends Widget {
+
+}
+
+
 /**
  * A widget which hosts a CodeMirror editor.
  */
@@ -78,7 +84,6 @@ class CodeMirrorWidget extends Widget {
     });
     model.stateChanged.connect(this.onModelStateChanged, this);
   }
-
 
   /**
    * Update whether the editor has a fixed maximum height.

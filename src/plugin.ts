@@ -7,43 +7,65 @@ import {
 } from 'phosphide';
 
 import {
-  Container
+  Container, Token
 } from 'phosphor-di';
 
 import {
-  CodeMirrorWidget
-} from './widget';
-
-import {
-  EditorViewModel
-} from './viewmodel';
+  IEditorFactory, IEditorViewModelOptions, IEditorViewModel,
+  IEditorWidget, EditorViewModel, CodeMirrorWidget
+} from './index';
 
 
+/**
+ * Register the plugin contributions.
+ *
+ * @param container - The di container for type registration.
+ *
+ * #### Notes
+ * This is called automatically when the plugin is loaded.
+ */
 export
-function resolve(container: Container): Promise<void> {
-  return container.resolve(EditorHandler).then(handler => { handler.run(); });
+function register(container: Container): void {
+  return container.register(IEditorFactory, EditorFactory);
 }
 
 
-class EditorHandler {
+/**
+ * A concrete implementation of `IEditorFactory`.
+ */
+class EditorFactory {
+  /**
+   * The dependencies required by the editor factory.
+   */
+  static requires: Token<any>[] = [];
 
-  static requires = [IAppShell];
-
-  static create(shell: IAppShell): EditorHandler {
-    return new EditorHandler(shell);
+  /**
+   * Create a new editor factory instance.
+   */
+  static create(): IEditorFactory {
+    return new EditorFactory();
   }
 
-  constructor(shell: IAppShell) {
-    this._shell = shell;
+  /**
+   * Create a new editor view model from options.
+   *
+   * @param options - The initialization options for the view model.
+   */
+  newViewModel(options?: IEditorViewModelOptions): IEditorViewModel {
+    return new EditorViewModel(options);
   }
 
-  run(): void {
-    let model = new EditorViewModel();
-    let view = new CodeMirrorWidget(model);
-    model.filename = 'untitled.txt'
-    view.title.closable = true;
-    this._shell.addToMainArea(view);
+  /**
+   * Create a new editor from a view model.
+   *
+   * @param model - The view model for the editor.
+   */
+  newEditor(model: IEditorViewModel): IEditorWidget {
+    let editor = new CodeMirrorWidget(model);
+    editor.title.closable = true;
+    return editor;
   }
 
   private _shell: IAppShell;
+
 }
