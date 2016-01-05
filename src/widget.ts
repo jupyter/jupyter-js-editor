@@ -53,7 +53,7 @@ let diffMatchPatch = new dmp.diff_match_patch();
 
 export
 interface IEditorWidget extends Widget {
-  model: IEditorViewModel;
+
 }
 
 
@@ -83,13 +83,6 @@ class CodeMirrorWidget extends Widget {
       this._model.text = this._editor.getDoc().getValue();
     });
     model.stateChanged.connect(this.onModelStateChanged, this);
-  }
-
-  /**
-   * Get the model used by the widget.
-   */
-  get model(): IEditorViewModel {
-    return this._model;
   }
 
   /**
