@@ -7,17 +7,25 @@ import {
 } from 'phosphor-di';
 
 import {
+  Widget
+} from 'phosphor-widget';
+
+import {
   IEditorViewModelOptions
 } from './viewmodel';
+
+import {
+  IEditorWidget
+} from './widget';
 
 export * from './viewmodel';
 export * from './widget';
 
 
 export
-interface INewEditor {
-   open(options: IEditorViewModelOptions): void;
+interface IEditorFactory {
+   create(options: IEditorViewModelOptions): IEditorWidget;
 }
 
 export
-const INewEditor = new Token<INewEditor>('jupyter-js-editor.INewEditor');
+const IEditorFactory = new Token<IEditorFactory>('jupyter-js-editor.IEditorFactory');

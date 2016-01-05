@@ -11,7 +11,8 @@ import {
 } from 'phosphor-di';
 
 import {
-  INewEditor, IEditorViewModelOptions, EditorViewModel, CodeMirrorWidget
+  IEditorFactory, IEditorViewModelOptions, IEditorWidget, EditorViewModel,
+  CodeMirrorWidget
 } from './index';
 
 
@@ -23,7 +24,7 @@ function resolve(container: Container): Promise<void> {
 
 export
 function register(container: Container): void {
-  return container.register(INewEditor, NewEditor);
+  return container.register(IEditorFactory, EditorFactory);
 }
 
 
@@ -51,23 +52,19 @@ class EditorHandler {
 }
 
 
-class NewEditor {
+class EditorFactory {
 
-  static requires: Token<any>[] = [IAppShell];
+  static requires: Token<any>[] = [];
 
-  static create(shell: IAppShell): INewEditor {
-    return new NewEditor(shell);
+  static create(): IEditorFactory {
+    return new EditorFactory();
   }
 
-  constructor(shell: IAppShell) {
-    this._shell = shell;
-  }
-
-  open(options: IEditorViewModelOptions) {
+  create(options: IEditorViewModelOptions): IEditorWidget {
     let model = new EditorViewModel(options);
     let editor = new CodeMirrorWidget(model);
     editor.title.closable = true;
-    this._shell.addToMainArea(editor);
+    return editor;
   }
 
   private _shell: IAppShell;
