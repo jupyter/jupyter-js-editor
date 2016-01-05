@@ -41,7 +41,7 @@ class EditorHandler {
     let model = new EditorViewModel();
     let view = new CodeMirrorWidget(model);
     model.filename = 'untitled.txt'
-    this._shell.addToLeftArea(view, { rank: 10 });
+    this._shell.addToMainArea(view);
   }
 
   private _shell: IAppShell;
