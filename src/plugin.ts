@@ -7,21 +7,23 @@ import {
 } from 'phosphide';
 
 import {
-  Container
+  Container, Token
 } from 'phosphor-di';
 
 import {
-  CodeMirrorWidget
-} from './widget';
-
-import {
-  EditorViewModel
-} from './viewmodel';
+  INewEditor, IEditorViewModelOptions, EditorViewModel, CodeMirrorWidget
+} from './index';
 
 
 export
 function resolve(container: Container): Promise<void> {
   return container.resolve(EditorHandler).then(handler => { handler.run(); });
+}
+
+
+export
+function register(container: Container): void {
+  return container.register(INewEditor, NewEditor);
 }
 
 
@@ -39,11 +41,35 @@ class EditorHandler {
 
   run(): void {
     let model = new EditorViewModel();
-    let view = new CodeMirrorWidget(model);
+    let editor = new CodeMirrorWidget(model);
     model.filename = 'untitled.txt'
-    view.title.closable = true;
-    this._shell.addToMainArea(view);
+    editor.title.closable = true;
+    this._shell.addToMainArea(editor);
   }
 
   private _shell: IAppShell;
+}
+
+
+class NewEditor {
+
+  static requires: Token<any>[] = [IAppShell];
+
+  static create(shell: IAppShell): INewEditor {
+    return new NewEditor(shell);
+  }
+
+  constructor(shell: IAppShell) {
+    this._shell = shell;
+  }
+
+  open(options: IEditorViewModelOptions) {
+    let model = new EditorViewModel(options);
+    let editor = new CodeMirrorWidget(model);
+    editor.title.closable = true;
+    this._shell.addToMainArea(editor);
+  }
+
+  private _shell: IAppShell;
+
 }
