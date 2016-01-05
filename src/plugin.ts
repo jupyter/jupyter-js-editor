@@ -41,6 +41,7 @@ class EditorHandler {
     let model = new EditorViewModel();
     let view = new CodeMirrorWidget(model);
     model.filename = 'untitled.txt'
+    view.title.closable = true;
     this._shell.addToMainArea(view);
   }
 
