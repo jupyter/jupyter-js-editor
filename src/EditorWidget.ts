@@ -58,59 +58,6 @@ export
 class CodeMirrorWidget extends Widget {
 
   /**
-   * Load and set a CodeMirror mode.
-   *
-   * #### Notes
-   * This assumes WebPack as the module loader.
-   * It can be overriden by subclasses.
-   */
-  static loadCodeMirrorMode(editor: CodeMirror.Editor, mode: string): void {
-    if (CodeMirror.modes.hasOwnProperty(mode)) {
-      editor.setOption('mode', mode);
-    } else {
-      // Bundle common modes.
-      switch(mode) {
-      case 'python':
-        require('codemirror/mode/python/python');
-        editor.setOption('mode', mode);
-        break;
-      case 'javascript':
-      case 'typescript':
-        require('codemirror/mode/javascript/javascript');
-        editor.setOption('mode', mode);
-        break;
-      case 'css':
-        require('codemirror/mode/css/css');
-        editor.setOption('mode', mode);
-        break;
-      case 'julia':
-        require('codemirror/mode/julia/julia');
-        editor.setOption('mode', mode);
-        break;
-      case 'r':
-        require('codemirror/mode/r/r');
-        editor.setOption('mode', mode);
-        break;
-      case 'markdown':
-        require('codemirror/mode/markdown/markdown');
-        editor.setOption('mode', mode);
-        break;
-      default:
-        // Load the remaining mode bundle asynchronously.
-        require([`codemirror/mode/${mode}/${mode}.js`], () => {
-          editor.setOption('mode', mode);
-        });
-        break;
-      }
-    }
-  }
-
-  /**
-   * The static type of the constructor.
-   */
-  'constructor': typeof CodeMirrorWidget;
-
-  /**
    * Construct a CodeMirror widget.
    */
   constructor(model: IEditorViewModel) {
@@ -131,6 +78,7 @@ class CodeMirrorWidget extends Widget {
     });
     model.stateChanged.connect(this.onModelStateChanged, this);
   }
+
 
   /**
    * Update whether the editor has a fixed maximum height.
@@ -167,7 +115,7 @@ class CodeMirrorWidget extends Widget {
     } else {
       let info = CodeMirror.findModeByMIME(mimetype);
       if (info) {
-        this.constructor.loadCodeMirrorMode(this._editor, info.mode);
+        this.loadCodeMirrorMode(info.mode);
       }
     }
   }
@@ -181,7 +129,7 @@ class CodeMirrorWidget extends Widget {
     }
     let info = CodeMirror.findModeByFileName(filename);
     if (info) {
-      this.constructor.loadCodeMirrorMode(this._editor, info.mode);
+      this.loadCodeMirrorMode(info.mode);
     }
   }
 
@@ -285,6 +233,55 @@ class CodeMirrorWidget extends Widget {
     case 'tabSize':
       this.updateTabSize(args.newValue as number);
       break;
+    }
+  }
+
+  /**
+   * Load and set a CodeMirror mode.
+   *
+   * #### Notes
+   * This assumes WebPack as the module loader.
+   * It can be overriden by subclasses.
+   */
+  protected loadCodeMirrorMode(mode: string): void {
+    let editor = this._editor;
+    if (CodeMirror.modes.hasOwnProperty(mode)) {
+      editor.setOption('mode', mode);
+    } else {
+      // Bundle common modes.
+      switch(mode) {
+      case 'python':
+        require('codemirror/mode/python/python');
+        editor.setOption('mode', mode);
+        break;
+      case 'javascript':
+      case 'typescript':
+        require('codemirror/mode/javascript/javascript');
+        editor.setOption('mode', mode);
+        break;
+      case 'css':
+        require('codemirror/mode/css/css');
+        editor.setOption('mode', mode);
+        break;
+      case 'julia':
+        require('codemirror/mode/julia/julia');
+        editor.setOption('mode', mode);
+        break;
+      case 'r':
+        require('codemirror/mode/r/r');
+        editor.setOption('mode', mode);
+        break;
+      case 'markdown':
+        require('codemirror/mode/markdown/markdown');
+        editor.setOption('mode', mode);
+        break;
+      default:
+        // Load the remaining mode bundle asynchronously.
+        require([`codemirror/mode/${mode}/${mode}.js`], () => {
+          editor.setOption('mode', mode);
+        });
+        break;
+      }
     }
   }
 

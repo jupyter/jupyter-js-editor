@@ -1,4 +1,3 @@
-import * as CodeMirror from 'codemirror';
 import { Message } from 'phosphor-messaging';
 import { IChangedArgs } from 'phosphor-properties';
 import { ResizeMessage, Widget } from 'phosphor-widget';
@@ -7,18 +6,6 @@ import { IEditorViewModel } from './EditorViewModel';
  * A widget which hosts a CodeMirror editor.
  */
 export declare class CodeMirrorWidget extends Widget {
-    /**
-     * Load and set a CodeMirror mode.
-     *
-     * #### Notes
-     * This assumes WebPack as the module loader.
-     * It can be overriden by subclasses.
-     */
-    static loadCodeMirrorMode(editor: CodeMirror.Editor, mode: string): void;
-    /**
-     * The static type of the constructor.
-     */
-    'constructor': typeof CodeMirrorWidget;
     /**
      * Construct a CodeMirror widget.
      */
@@ -79,6 +66,14 @@ export declare class CodeMirrorWidget extends Widget {
      * Change handler for model updates.
      */
     protected onModelStateChanged(sender: IEditorViewModel, args: IChangedArgs<any>): void;
+    /**
+     * Load and set a CodeMirror mode.
+     *
+     * #### Notes
+     * This assumes WebPack as the module loader.
+     * It can be overriden by subclasses.
+     */
+    protected loadCodeMirrorMode(mode: string): void;
     private _editor;
     private _model;
     private _dirty;
