@@ -1,12 +1,13 @@
 {
   "name": "jupyter-js-editor",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "Code/text editor widget for Jupyter",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
     "codemirror": "^5.8.0",
     "diff-match-patch": "^1.0.0",
+    "phosphide": "0.0.6",
     "phosphor-disposable": "^1.0.5",
     "phosphor-messaging": "^1.0.6",
     "phosphor-properties": "^2.0.0",
