@@ -2,5 +2,5 @@
 // Distributed under the terms of the Modified BSD License.
 'use strict';
 
-export * from './EditorViewModel';
-export * from './EditorWidget';
+export * from './viewmodel';
+export * from './widget';

@@ -30,7 +30,7 @@ import {
 
 import {
   IEditorViewModel
-} from './EditorViewModel';
+} from './viewmodel';
 
 
 /**
