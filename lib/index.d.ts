@@ -1,2 +1,2 @@
-export * from './EditorViewModel';
-export * from './EditorWidget';
+export * from './viewmodel';
+export * from './widget';

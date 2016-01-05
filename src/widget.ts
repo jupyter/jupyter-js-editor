@@ -30,7 +30,7 @@ import {
 
 import {
   IEditorViewModel
-} from './EditorViewModel';
+} from './viewmodel';
 
 
 /**
@@ -124,6 +124,7 @@ class CodeMirrorWidget extends Widget {
    * Set the mode by the given filename if the mimetype is not set.
    */
   protected updateFilename(filename: string): void {
+    this.title.text = filename;
     if (this._model.mimetype) {
       return;
     }
