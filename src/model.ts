@@ -15,7 +15,7 @@ import {
  * Interface that must be implemented to set defaults on an EditorModel.
  */
 export
-interface IEditorModelOptions {
+interface IEditorOptions {
   /**
    * The initial text in the text editor.
    */
@@ -65,7 +65,7 @@ class EditorModel  {
   /**
    * Construct an Editor Model.
    */
-  constructor(options?: IEditorModelOptions) {
+  constructor(options?: IEditorOptions) {
     if (options) EditorModelPrivate.initFrom(this, options);
   }
 
@@ -264,7 +264,7 @@ namespace EditorModelPrivate {
    * Initialize an editor view model from an options object.
    */
   export
-  function initFrom(model: EditorModel, options: IEditorModelOptions): void {
+  function initFrom(model: EditorModel, options: IEditorOptions): void {
     if (options.mimetype !== void 0) {
       model.mimetype = options.mimetype;
     }
