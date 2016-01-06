@@ -195,7 +195,7 @@ class CodeMirrorWidget extends Widget {
     } else {
       let info = CodeMirror.findModeByMIME(mimetype);
       if (info) {
-        this.loadCodeMirrorMode(info.mode);
+        this.loadCodeMirrorMode(info.mode, info.mime);
       }
     }
   }
@@ -210,7 +210,7 @@ class CodeMirrorWidget extends Widget {
     }
     let info = CodeMirror.findModeByFileName(filename);
     if (info) {
-      this.loadCodeMirrorMode(info.mode);
+      this.loadCodeMirrorMode(info.mode, info.mime);
     }
   }
 
@@ -324,42 +324,42 @@ class CodeMirrorWidget extends Widget {
    * This assumes WebPack as the module loader.
    * It can be overriden by subclasses.
    */
-  protected loadCodeMirrorMode(mode: string): void {
+  protected loadCodeMirrorMode(mode: string, mimetype: string): void {
     let editor = this._editor;
     if (CodeMirror.modes.hasOwnProperty(mode)) {
-      editor.setOption('mode', mode);
+      editor.setOption('mode', mimetype);
     } else {
       // Bundle common modes.
       switch(mode) {
       case 'python':
         require('codemirror/mode/python/python');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       case 'javascript':
       case 'typescript':
         require('codemirror/mode/javascript/javascript');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       case 'css':
         require('codemirror/mode/css/css');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       case 'julia':
         require('codemirror/mode/julia/julia');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       case 'r':
         require('codemirror/mode/r/r');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       case 'markdown':
         require('codemirror/mode/markdown/markdown');
-        editor.setOption('mode', mode);
+        editor.setOption('mode', mimetype);
         break;
       default:
         // Load the remaining mode bundle asynchronously.
         require([`codemirror/mode/${mode}/${mode}.js`], () => {
-          editor.setOption('mode', mode);
+          editor.setOption('mode', mimetype);
         });
         break;
       }

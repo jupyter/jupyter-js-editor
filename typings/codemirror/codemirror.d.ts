@@ -18,6 +18,7 @@ declare module CodeMirror {
     interface modespec {
       name: string;
       mode: string;
+      mime: string;
     }
     function findModeByName(name: string): modespec;
     function findModeByFileName(name: string): modespec;
