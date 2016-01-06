@@ -8,12 +8,12 @@
 'use strict';
 
 import {
-  EditorViewModel, CodeMirrorWidget
+  EditorModel, CodeMirrorWidget
 } from '../lib/index';
 
 
 function main(): void {
-  var model = new EditorViewModel();
+  var model = new EditorModel();
   var view = new CodeMirrorWidget(model);
 
   view.attach(document.getElementById('main'));
