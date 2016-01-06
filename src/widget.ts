@@ -137,10 +137,13 @@ class CodeMirrorWidget extends Widget {
   }
 
   /**
-   * Set the editor model, can not be `null`.
+   * Set the editor model.
+   *
+   * #### Notes
+   * This is a no-op if the value is `null` or the existing model.
    */
   set model(value: IEditorModel) {
-    if (value === null) {
+    if (value === null || value === this._model) {
       return;
     }
     if (this._model !== null) {
