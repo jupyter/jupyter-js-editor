@@ -2,9 +2,8 @@
 *.user
 .DS_Store
 node_modules
-npm-debug.log
 test/build
 test/coverage
 docs/api
-example/*.js
+example/build
 lib/

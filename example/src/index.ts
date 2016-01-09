@@ -9,7 +9,7 @@
 
 import {
   EditorModel, CodeMirrorWidget
-} from '../lib/index';
+} from '../../lib/index';
 
 
 function main(): void {
