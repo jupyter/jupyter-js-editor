@@ -332,7 +332,8 @@ class CodeMirrorWidget extends Widget {
     if (CodeMirror.modes.hasOwnProperty(mode)) {
       editor.setOption('mode', mimetype);
     } else {
-      // Bundle common modes.
+      // We statically require common modes so that the bundler
+      // picks them up automatically.
       switch(mode) {
       case 'python':
         require('codemirror/mode/python/python');
@@ -357,6 +358,10 @@ class CodeMirrorWidget extends Widget {
         break;
       case 'markdown':
         require('codemirror/mode/markdown/markdown');
+        editor.setOption('mode', mimetype);
+        break;
+      case 'gfm':
+        require('codemirror/mode/gfm/gfm');
         editor.setOption('mode', mimetype);
         break;
       default:
