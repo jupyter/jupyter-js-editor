@@ -1,16 +1,12 @@
 
 module.exports = {
-  entry: './example/index.ts',
+  entry: './example/build/index.js',
   output: {
-    path: './example',
+    path: './example/build',
     filename: 'bundle.js'
-  },
-  resolve: {
-    extensions: ['', '.ts', '.js']
   },
   module: {
     loaders: [
-      { test: /\.ts$/, loader: 'ts-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
     ]
   }
