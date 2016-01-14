@@ -32,7 +32,7 @@ import {
 /**
  * The class name added to CodeMirrorWidget instances.
  */
-const FILE_BROWSER_CLASS = 'jp-CodeMirroWidget';
+const FILE_BROWSER_CLASS = 'jp-CodeMirrorWidget';
 
 
 /**
