@@ -82,6 +82,16 @@ Earlier versions may also work, but come with no guarantees.
 - Chrome 38+
 
 
+Bundle for the Browser
+----------------------
+
+Follow the package install instructions first.
+
+Any bundler that understands how to `require()` files with `.js` and `.css`
+extensions can be used with this package.
+
+
+
 Usage Examples
 --------------
 
