@@ -5,17 +5,21 @@
 import expect = require('expect.js');
 
 import {
-  EditorModel, CodeMirrorWidget
+  ContentsManager
+} from 'jupyter-js-services';
+
+import {
+  FileHandler
 } from '../../lib';
 
 
 describe('jupyter-js-editor', () => {
 
-  describe('CodeMirrorWidget', () => {
+  describe('FileHandler', () => {
 
     it('should always pass', () => {
-        let model = new EditorModel();
-        let widget = new CodeMirrorWidget(model);
+      let manager = new ContentsManager('');
+      let handler = new FileHandler(manager);
     });
 
   });
