@@ -10,6 +10,8 @@
   "files": [
     "../../typings/expect.js/expect.js.d.ts",
     "../../typings/mocha/mocha.d.ts",
+    "../../typings/es6-promise.d.ts",
+    "../../typings/codemirror/codemirror.d.ts",
     "index.ts"
   ]
 }

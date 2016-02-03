@@ -4,6 +4,6 @@
 node_modules
 test/build
 test/coverage
-docs/api
+docs
 example/build
 lib/
