@@ -3,7 +3,6 @@ var path = require('path');
 module.exports = {
   entry: './test/build/index.js',
   output: {
-  output: {
     path: './test/build',
     filename: 'coverage.js'
   },
