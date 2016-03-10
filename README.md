@@ -1,5 +1,8 @@
-Jupyter JS Editor
-=================
+DEPRECATED: Jupyter JS Editor
+=============================
+
+This code has been merged into the [jupyter-js-notebook](https://github.com/jupyter/jupyter-js-notebook) repository, where it will continue to be developed.
+
 
 Code/text editor for Jupyter.
 

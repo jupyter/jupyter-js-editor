@@ -1,7 +1,7 @@
 {
   "name": "jupyter-js-editor",
   "version": "0.1.10",
-  "description": "Code/text editor widget for Jupyter",
+  "description": "DEPRECATED: Code/text editor widget for Jupyter",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
